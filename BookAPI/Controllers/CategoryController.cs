@@ -1,3 +1,4 @@
+using BookAPI;
 using BookAPI.IRepositories;
 using BookAPI.Models;
 using BookAPI.ModelView;
@@ -35,7 +36,7 @@ public class CategoryController:ControllerBase
     }
     
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.AdminRole}")]
     public async Task<IActionResult> Create([FromBody]CreatCategory categoryReq)
     {
         var category = new Category();
@@ -52,7 +53,7 @@ public class CategoryController:ControllerBase
     }
 
     [HttpDelete]
-    [Authorize]
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.AdminRole}")]
     public async Task<IActionResult> Delete(int id)
     {
         var category =await _categoryRepository.GetByIdAsync(id);
@@ -68,7 +69,7 @@ public class CategoryController:ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize]
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.AdminRole}")]
     public async Task<IActionResult> Edit(int id,[FromBody]CreatCategory categoryReq)
     {
         var category = await _categoryRepository.GetByIdAsync(id);

@@ -23,6 +23,13 @@ public class BookRepository:Repository<Book>, IBookRepository
             .Include(a => a.Comments)
             .FirstOrDefaultAsync(a => a.Id == id);
     }
+    public async Task<List<Book>> GetAllBook()
+    {
+        return await _context.Books
+            .Include(a => a.Author)
+            .Include(a => a.Category)
+            .ToListAsync();
+    }
     
     
     

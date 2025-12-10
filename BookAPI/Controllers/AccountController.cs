@@ -1,3 +1,4 @@
+using BookAPI;
 using BookAPI.Data;
 using BookAPI.IRepositories;
 using BookAPI.Models;
@@ -140,8 +141,10 @@ public class AccountController:ControllerBase
         user.UserName = vm.Email;
         var Don = await _userManager.CreateAsync(user,vm.Password);
         
+        
         if (Don.Succeeded)
         {
+            _userManager.AddToRoleAsync(user!, SD.UserRole).GetAwaiter().GetResult();
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var link = Url.Action(nameof(Confirm),"Account",new{token=token,id=user.Id},Request.Scheme);
             var htmlMessage = $@"

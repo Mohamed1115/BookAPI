@@ -7,7 +7,7 @@ public class CreatBookReq
     // public Author Author { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string ImageUrl { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; } = string.Empty;
     public int Quantity { get; set; }
     public int Price { get; set; }
     public float Rating { get; set; }

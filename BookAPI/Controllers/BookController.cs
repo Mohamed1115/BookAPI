@@ -21,10 +21,26 @@ public class BookController:ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(string? category ,string? BookName,string? Author,int? Year ,bool rating=false,int page = 1)
     {
-        var Act = await _BookRepository.GetAllAsync();
-        return Ok(Act);
+        var bok = await _BookRepository.GetAllBook();
+        if (BookName is not null)
+            bok = bok.Where(e => e.Title.Contains(BookName)).ToList();
+        if (Author is not null)
+            bok = bok.Where(e => e.Author.Name.Contains(Author)).ToList();
+        if (Year is not null)
+            bok = bok.Where(e => e.YearPublished==Year).ToList();
+        if (category is not null)
+            bok = bok.Where(e => e.Category.Name==category).ToList();
+        if (rating)
+            bok=bok.OrderByDescending(e => e.Rating).ToList();
+        int totalPages = (int)Math.Ceiling((double)bok.Count() / 10);
+        bok = bok.Skip((page - 1) * 10).Take(10).ToList(); 
+        return Ok(new
+        {
+            Books = bok,
+            TotalPages = totalPages
+        } );
     }
 
     [HttpGet]
@@ -38,8 +54,8 @@ public class BookController:ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> Create([FromBody]CreatBookReq bok,IFormFile Imag)
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.AdminRole}")]
+    public async Task<IActionResult> Create([FromForm]CreatBookReq bok,IFormFile Imag)
     {
 
         if ( Imag.Length > 0)
@@ -73,7 +89,7 @@ public class BookController:ControllerBase
     }
 
     [HttpDelete]
-    [Authorize]
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.AdminRole}")]
     public async Task<IActionResult> Delete(int id)
     {
         var Book =await _BookRepository.GetByIdAsync(id);
@@ -98,7 +114,7 @@ public class BookController:ControllerBase
 
     
     [HttpPut("{Id}")]
-    [Authorize]
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.AdminRole}")]
     public async  Task<IActionResult> Edit(int Id, UpdateBookReq bok,IFormFile Imag)
     {
         

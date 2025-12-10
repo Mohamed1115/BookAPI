@@ -7,7 +7,7 @@ using BookAPI.Models;
 using BookAPI.ModelView;
 
 namespace BookAPI.Controllers;
-[Route("Auther/[controller]/[action]")]
+[Route("Api/[controller]/[action]")]
 [ApiController]
 public class AuthorController:ControllerBase
 {
@@ -38,8 +38,8 @@ public class AuthorController:ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> Create([FromBody]CreatAuthorReq Auth,IFormFile Imag)
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.AdminRole}")]
+    public async Task<IActionResult> Create([FromForm]CreatAuthorReq Auth,IFormFile Imag)
     {
 
         if ( Imag.Length > 0)
@@ -71,7 +71,7 @@ public class AuthorController:ControllerBase
     }
 
     [HttpDelete]
-    [Authorize]
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.AdminRole}")]
     public async Task<IActionResult> Delete(int id)
     {
         var Author =await _AuthorRepository.GetByIdAsync(id);
@@ -96,7 +96,7 @@ public class AuthorController:ControllerBase
 
     
     [HttpPut("{Id}")]
-    [Authorize]
+    [Authorize(Roles = $"{SD.SuperAdminRole},{SD.AdminRole}")]
     public async  Task<IActionResult> Edit(int Id, UpdateAuthorReq act,IFormFile Imag)
     {
         

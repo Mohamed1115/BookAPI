@@ -19,10 +19,11 @@ public class CommentController:ControllerBase
     // private readonly IBookRepository _BookRepository;
     
     
-    public  CommentController(ICommentRepository CommentRepository, IBookRepository bookRepository)
+    public  CommentController(ICommentRepository CommentRepository, IBookRepository bookRepository, UserManager<ApplicationUser> userManager)
     {
         _CommentRepository = CommentRepository;
         _BookRepository = bookRepository;
+        _userManager = userManager;
     }
 
     // [HttpGet]
@@ -47,6 +48,8 @@ public class CommentController:ControllerBase
     public async Task<IActionResult> Create([FromBody]CreatCommentReq Com,int id)
     {
         var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Unauthorized("You must login first!");
         
         var Comment = new Comment
         {
@@ -76,11 +79,17 @@ public class CommentController:ControllerBase
     [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
+        
         var Comment =await _CommentRepository.GetByIdAsync(id);
     
         if (Comment == null)
         {
             return NotFound();
+        }
+        var user = await _userManager.GetUserAsync(User);
+        if (Comment.UserId != user.Id)
+        {
+            return Unauthorized("You are not allowed to delete this comment.");
         }
     
         // مسح الصورة
@@ -92,7 +101,7 @@ public class CommentController:ControllerBase
         book.Rating = bookRat;
         
         await _BookRepository.UpdateAsync(book);
-        return RedirectToAction(nameof(GetById), new { id = Comment.Id });
+        return Ok();
     }
 
     

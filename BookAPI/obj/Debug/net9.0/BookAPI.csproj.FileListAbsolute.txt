@@ -149,3 +149,5 @@
 /home/mohamed/Code/Net/WEP/BookAPI/BookAPI/bin/Debug/net9.0/BookAPI.staticwebassets.runtime.json
 /home/mohamed/Code/Net/WEP/BookAPI/BookAPI/bin/Debug/net9.0/Newtonsoft.Json.dll
 /home/mohamed/Code/Net/WEP/BookAPI/BookAPI/bin/Debug/net9.0/Stripe.net.dll
+/home/mohamed/Code/Net/WEP/BookAPI/BookAPI/obj/Debug/net9.0/BookAPI.sourcelink.json
+/home/mohamed/Code/Net/WEP/BookAPI/BookAPI/bin/Debug/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll

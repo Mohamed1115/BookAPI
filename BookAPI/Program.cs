@@ -6,6 +6,7 @@ using BookAPI.Utilites;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using BookAPI.Repositories;
+using BookAPI.Utilites.DBInitializer;
 using Scalar.AspNetCore;
 using Stripe;
 
@@ -52,6 +53,11 @@ public class Program
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+        builder.Services.AddAuthentication().AddCookie(options =>
+        {
+            options.LoginPath = "/Auth/Account/Login";
+            options.LogoutPath = "/Account/Logout";
+        });
 
         // Email Sender
         builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
@@ -65,6 +71,7 @@ public class Program
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
         builder.Services.AddScoped<ICartRepository, CartRepository>();
         builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+        builder.Services.AddScoped<IDBInitializer, DBInitializer>();
 
         StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
         
@@ -81,6 +88,13 @@ public class Program
 
         app.UseAuthorization();
 
+
+        using (var  scope = app.Services.CreateScope())
+        {
+            var initializer = scope.ServiceProvider.GetRequiredService<IDBInitializer>();
+            initializer.Initialize();
+        }
+        
 
         app.MapControllers();
 
